@@ -37,7 +37,7 @@ public class AiController {
     @GetMapping("/test")
     public String test(@RequestParam("msg") String msg) {
         ChatClient chatClient =
-            ChatClient.builder(openAiChatModel).defaultTools(trafficHourTool).defaultToolCallbacks(tools)
+            ChatClient.builder(openAiChatModel).defaultToolCallbacks(tools).defaultTools(trafficHourTool)
                 .defaultAdvisors(SimpleLoggerAdvisor.builder().build(),
                     MessageChatMemoryAdvisor.builder(MessageWindowChatMemory.builder().build()).build()).build();
         return chatClient.prompt(msg).call().content();
