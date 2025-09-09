@@ -8,7 +8,9 @@ import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.openai.OpenAiChatModel;
+import com.learn.peppa.spring.ai.demo.tool.TrafficHourTool;
 import org.springframework.ai.tool.ToolCallbackProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -29,16 +31,15 @@ public class AiController {
     @Resource
     private ToolCallbackProvider tools;
 
+    @Autowired
+    private TrafficHourTool trafficHourTool;
+
     @GetMapping("/test")
     public String test(@RequestParam("msg") String msg) {
         ChatClient chatClient =
-            ChatClient.builder(openAiChatModel).defaultToolCallbacks(tools)
-                .defaultAdvisors(SimpleLoggerAdvisor.builder().build())
-                .defaultAdvisors(MessageChatMemoryAdvisor.builder(MessageWindowChatMemory.builder().build()).build())
-                .build();
-        var response = chatClient.prompt(msg).call().content();
-        System.out.println("response: " + response);
-        return response;
+            ChatClient.builder(openAiChatModel).defaultTools(trafficHourTool).defaultToolCallbacks(tools)
+                .defaultAdvisors(SimpleLoggerAdvisor.builder().build(),
+                    MessageChatMemoryAdvisor.builder(MessageWindowChatMemory.builder().build()).build()).build();
+        return chatClient.prompt(msg).call().content();
     }
-
 }
