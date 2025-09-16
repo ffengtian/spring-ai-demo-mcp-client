@@ -10,7 +10,7 @@ spring:
         sse:
           connections:
             server1:
-              url: http://127.0.0.1:8080
+              url: http://127.0.0.1:8085
         toolcallback:
           enabled: true
         health-check:
